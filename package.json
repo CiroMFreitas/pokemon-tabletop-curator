@@ -1,0 +1,15 @@
+{
+  "name": "pokemon-tabletop-curator",
+  "version": "1.0.0",
+  "description": "Tool to collect data from POKE API using pokedex-promise-v2 wrapper for my tabletop needs.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "author": "Ciro M. de Freitas",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "pokedex-promise-v2": "^4.1.1"
+  }
+}
