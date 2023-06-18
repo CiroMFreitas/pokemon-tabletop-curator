@@ -1,5 +1,6 @@
 import Pokedex from 'pokedex-promise-v2';
 import * as fs from 'fs';
+import capitalizeString from "./utils.js";
 
 // API Wrapper
 const POKEDEX = new Pokedex();
@@ -92,7 +93,7 @@ async function curateAbilities(abilities) {
       name: newAbility.name,
       flavorText: newAbilityFlavorText.replace("\n", " "),
     });
-    console.log(firstLettertoUpperCase(ability) + " ability collected!");
+    console.log(capitalizeString(ability) + " ability collected!");
   }
 
   // Writes curated abilities file
@@ -117,7 +118,7 @@ async function curateMoves(moves) {
       exertion: getMoveExhaustion(newMove.pp),
       flavorText: newMoveFlavorText.replace("\n", " ")
     });
-    console.log(firstLettertoUpperCase(move) + " move collected!");
+    console.log(capitalizeString(move) + " move collected!");
   }
 
   // Write file with curated pokemons data and returns all relevant abilities and moves names
@@ -186,7 +187,7 @@ async function getLatestFlavorText(flavor_text_entries, name) {
   if(flavor_text_entries.length == 0) {
     return "None.";
   } else {
-    console.log("No game version with " + firstLettertoUpperCase(name) + " flavor text! :(");
+    console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
     process.exit();
   }
 }
