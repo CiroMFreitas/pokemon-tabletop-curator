@@ -73,5 +73,12 @@ function moveEffectFlagsHandler(meta, statChanges) {
         });
     }
 
+    if(meta.drain != 0){
+        effectFlags.push({
+            name: drain,
+            strength: Math.ceil(meta.drain/20),
+        });
+    }
+
     return effectFlags;
 }
