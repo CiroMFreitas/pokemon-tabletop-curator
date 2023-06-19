@@ -101,5 +101,23 @@ function moveEffectFlagsHandler(meta, statChanges) {
         });
     }
 
+    for(const statChange of statChanges) {
+        switch(true) {
+            case statChange.change > 0:
+                effectFlags.push({
+                    name: "raises " + statChange.stat.name,
+                    statChange: statChange.change,
+                });
+                break;
+
+            case statChange.change < 0:
+                effectFlags.push({
+                    name: "lowers " + statChange.stat.name,
+                    statChange: statChange.change,
+                });
+                break;
+        }
+    }
+
     return effectFlags;
 }
