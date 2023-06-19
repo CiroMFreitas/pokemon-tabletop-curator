@@ -43,7 +43,10 @@ export default async function curatePokemon(pokedex, regionDex) {
         }
   
         for(const ability of pokemon.abilities) {
-            pokemonAbilities.push(ability.ability.name)
+            pokemonAbilities.push({
+                name: ability.ability.name,
+                slot: ability.slot,
+            });
     
             // Get relevant abilities names
             const isAbilityAlreadyCollected = abilities.find((collectedAbility) => collectedAbility == ability.ability.name);
@@ -57,7 +60,7 @@ export default async function curatePokemon(pokedex, regionDex) {
             name: pokemon.name,
             primaryType: pokemon.types[0].type.name,
             secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
-            abilities: abilities,
+            abilities: pokemonAbilities,
             hitpoints: Math.max(Math.round(pokemon.stats[0].base_stat/10), 1),
             attack: Math.max(Math.round(pokemon.stats[1].base_stat/20), 1),
             defense: Math.max(Math.round(pokemon.stats[2].base_stat/20), 1),
