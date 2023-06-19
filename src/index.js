@@ -1,7 +1,7 @@
 import Pokedex from 'pokedex-promise-v2';
 import * as fs from 'fs';
 import curatePokemon from './pokemon.js';
-import capitalizeString from "./utils.js";
+import { capitalizeString, getLatestFlavorText }  from "./utils.js";
 
 // API Wrapper
 const POKEDEX = new Pokedex();
@@ -75,25 +75,6 @@ function getMoveExhaustion(pp) {
 
     default:
       return 0;
-  }
-}
-
-async function getLatestFlavorText(flavor_text_entries, name) {  
-  for(const entry of flavor_text_entries) {
-    switch (entry.version_group.name) {
-      case "scarlet-violet":
-        return flavor_text_entries.find((founEntry) => founEntry.language.name == "en" && entry.version_group.name == "scarlet-violet").flavor_text;
-  
-      case "sword-shield":
-        return flavor_text_entries.find((founEntry) => founEntry.language.name == "en" && entry.version_group.name == "sword-shield").flavor_text;
-    }
-  }
-  
-  if(flavor_text_entries.length == 0) {
-    return "None.";
-  } else {
-    console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
-    process.exit();
   }
 }
 
