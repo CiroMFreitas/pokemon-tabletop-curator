@@ -87,5 +87,12 @@ function moveEffectFlagsHandler(meta, statChanges) {
         });
     }
 
+    if(meta.heal != 0){
+        effectFlags.push({
+            name: "heal",
+            strength: Math.ceil(meta.drain/20),
+        });
+    }
+
     return effectFlags;
 }
