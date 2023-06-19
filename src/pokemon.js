@@ -43,7 +43,10 @@ export default async function curatePokemon(pokedex, regionDex) {
         }
   
         for(const ability of pokemon.abilities) {
-            pokemonAbilities.push(ability.ability.name)
+            pokemonAbilities.push({
+                name: ability.ability.name,
+                slot: ability.slot,
+            });
     
             // Get relevant abilities names
             const isAbilityAlreadyCollected = abilities.find((collectedAbility) => collectedAbility == ability.ability.name);
