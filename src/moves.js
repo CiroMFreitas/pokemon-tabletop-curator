@@ -22,7 +22,8 @@ export default async function curateMoves(pokedex, moves) {
             accuracy: newMove.accuracy ? (6 - Math.floor(newMove.accuracy/20)) : null,
             power: newMove.power ? Math.max(Math.round(newMove.accuracy/25), 1) : null,
             exertion: getMoveExhaustion(newMove.pp),
-            flavorText: newMoveFlavorText.replace("\n", " ")
+            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.statChanges),
+            flavorText: newMoveFlavorText.replace("\n", " "),
         });
 
         console.log(capitalizeString(move) + " move collected!");
@@ -53,4 +54,17 @@ function getMoveExhaustion(pp) {
         default:
             return 0;
     }
-  }
+}
+
+function moveEffectFlagsHandler(meta, statChanges) {
+    const effectFlags = [];
+
+    if(meta.ailment.name != "none") {
+        effectFlags.push({
+            name: meta.ailment.name,
+            chance: 6 - Math.floor(meta.ailment_chance/20),
+        });
+    }
+
+    if(meta.crit_rate != 0) {
+}
