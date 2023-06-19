@@ -94,5 +94,12 @@ function moveEffectFlagsHandler(meta, statChanges) {
         });
     }
 
+    if(meta.max_hits != 0){
+        effectFlags.push({
+            name: "multiple",
+            strength: meta.max_hits,
+        });
+    }
+
     return effectFlags;
 }
