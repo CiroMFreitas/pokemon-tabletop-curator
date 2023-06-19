@@ -1,7 +1,7 @@
 // Pokemon data gathering methods
 
 import * as fs from 'fs';
-import capitalizeString from "./utils.js";
+import { capitalizeString } from "./utils.js";
 
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
