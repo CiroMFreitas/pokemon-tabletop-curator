@@ -22,7 +22,7 @@ export default async function curateMoves(pokedex, moves) {
             accuracy: newMove.accuracy ? (6 - Math.floor(newMove.accuracy/20)) : null,
             power: newMove.power ? Math.max(Math.round(newMove.accuracy/25), 1) : null,
             exertion: getMoveExhaustion(newMove.pp),
-            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.statChanges),
+            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.statChanges, newMove.priority),
             flavorText: newMoveFlavorText.replace("\n", " "),
         });
 
@@ -56,7 +56,7 @@ function getMoveExhaustion(pp) {
     }
 }
 
-function moveEffectFlagsHandler(meta, statChanges) {
+function moveEffectFlagsHandler(meta, statChanges, priority) {
     const effectFlags = [];
 
     if(meta.ailment.name != "none") {
@@ -117,6 +117,20 @@ function moveEffectFlagsHandler(meta, statChanges) {
                 });
                 break;
         }
+    }
+    
+    switch(true) {
+        case priority > 0:
+            effectFlags.push({
+                name: "priority+",
+            });
+            break;
+
+        case priority < 0:
+            effectFlags.push({
+                name: "priority-",
+            });
+            break;
     }
 
     return effectFlags;
