@@ -85,8 +85,8 @@ export default async function curatePokemon(pokedex, regionDex) {
  * Tries to find which vertsion the requested pokémon move set is the latest, moves object expects to be a
  * move endpoint from a pokemon using pokedex-promise-v2.
  * 
- * If no version is found, process will shut down as
- * it's intended to sinalize that I need to find the next possible version and add to the switch case.
+ * If no version is found, process will shut down as it's intended to sinalize that I need to find the next 
+ * possible version and add to the switch case.
  * 
  * @param {string} pokemonName 
  * @param {object} moves 
