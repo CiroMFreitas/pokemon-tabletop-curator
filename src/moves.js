@@ -67,4 +67,11 @@ function moveEffectFlagsHandler(meta, statChanges) {
     }
 
     if(meta.crit_rate != 0) {
+        effectFlags.push({
+            name: crit,
+            strength: meta.crit_rate,
+        });
+    }
+
+    return effectFlags;
 }
