@@ -67,35 +67,35 @@ function moveEffectFlagsHandler(meta, statChanges, priority) {
             });
         }
 
-        if(meta.crit_rate != 0) {
+        if(meta.crit_rate > 0) {
             effectFlags.push({
                 name: "crit",
                 strength: meta.crit_rate,
             });
         }
 
-        if(meta.drain != 0){
+        if(meta.drain > 0){
             effectFlags.push({
                 name: "drain",
                 strength: Math.ceil(meta.drain/20),
             });
         }
 
-        if(meta.flinch_chance != 0){
+        if(meta.flinch_chance > 0){
             effectFlags.push({
                 name: "flinch",
                 chance: 6 - Math.floor(meta.ailment_chance/20),
             });
         }
 
-        if(meta.heal != 0){
+        if(meta.heal > 0){
             effectFlags.push({
                 name: "heal",
                 strength: Math.ceil(meta.drain/20),
             });
         }
 
-        if(meta.max_hits != 0){
+        if(meta.max_hits > 0){
             effectFlags.push({
                 name: "multiple",
                 strength: meta.max_hits,
