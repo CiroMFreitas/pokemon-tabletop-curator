@@ -22,7 +22,7 @@ export default async function curateMoves(pokedex, moves) {
             accuracy: newMove.accuracy ? (6 - Math.floor(newMove.accuracy/20)) : null,
             power: newMove.power ? Math.max(Math.round(newMove.accuracy/25), 1) : null,
             exertion: getMoveExhaustion(newMove.pp),
-            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.statChanges, newMove.priority),
+            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.stat_changes, newMove.priority),
             flavorText: newMoveFlavorText.replace("\n", " "),
         });
 
