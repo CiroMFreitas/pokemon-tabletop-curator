@@ -5,8 +5,6 @@ import { capitalizeString } from "./utils.js";
 
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
- * It's data is curated for my needs, so it may not make sense as is.
- * Beware some regions with bigger pokedex entry, notably the national dex, will take it's sweet time curating.
  * 
  * Reponse: Object{ abilities: string[], moves: string[] }
  * 
