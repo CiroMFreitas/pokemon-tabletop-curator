@@ -68,21 +68,21 @@ function moveEffectFlagsHandler(meta, statChanges) {
 
     if(meta.crit_rate != 0) {
         effectFlags.push({
-            name: crit,
+            name: "crit",
             strength: meta.crit_rate,
         });
     }
 
     if(meta.drain != 0){
         effectFlags.push({
-            name: drain,
+            name: "drain",
             strength: Math.ceil(meta.drain/20),
         });
     }
 
     if(meta.flinch_chance != 0){
         effectFlags.push({
-            name: flinch,
+            name: "flinch",
             chance: 6 - Math.floor(meta.ailment_chance/20),
         });
     }
