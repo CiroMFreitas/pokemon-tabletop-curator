@@ -2,6 +2,7 @@ import Pokedex from 'pokedex-promise-v2';
 import * as fs from 'fs';
 import curatePokemon from './pokemon.js';
 import { capitalizeString, getLatestFlavorText }  from "./utils.js";
+import curateAbilities from './abilities.js';
 
 // API Wrapper
 const POKEDEX = new Pokedex();
@@ -9,32 +10,11 @@ const POKEDEX = new Pokedex();
 const REGION_DEX = "kanto";
 
 function start() {
-  const pokedex = new Pokedex();
-  curatePokemon(pokedex, REGION_DEX).then((response) => {
+  curatePokemon(POKEDEX, REGION_DEX).then((response) => {
     const { abilities, moves } = response;
-    curateAbilities(abilities);
+    curateAbilities(POKEDEX, abilities);
     curateMoves(moves);
   });
-}
-
-async function curateAbilities(abilities) {
-  console.log("Starting abilities data collection!");
-  const curatedAbilities = [];
-
-  for(const ability of abilities) {
-    const newAbility = await POKEDEX.getAbilityByName(ability);
-    const newAbilityFlavorText = await getLatestFlavorText(newAbility.flavor_text_entries, ability);
-
-    curatedAbilities.push({
-      name: newAbility.name,
-      flavorText: newAbilityFlavorText.replace("\n", " "),
-    });
-    console.log(capitalizeString(ability) + " ability collected!");
-  }
-
-  // Writes curated abilities file
-  fs.writeFileSync("./collected_data/abilities.json", JSON.stringify(curatedAbilities));
-  console.log("Abilities " + curatedAbilities.length + " collected!");
 }
 
 async function curateMoves(moves) {
