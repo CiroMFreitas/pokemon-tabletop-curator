@@ -80,5 +80,12 @@ function moveEffectFlagsHandler(meta, statChanges) {
         });
     }
 
+    if(meta.flinch_chance != 0){
+        effectFlags.push({
+            name: flinch,
+            chance: 6 - Math.floor(meta.ailment_chance/20),
+        });
+    }
+
     return effectFlags;
 }
