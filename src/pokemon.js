@@ -166,6 +166,22 @@ const EXCLUEDED_ALTERNATE_FORMS = [
     "miraidon-",
 ];
 
+const MOVE_SET_GAME_VERSION = [
+    "scarlet-violet",
+    "brilliant-diamond-and-shining-pearl",
+    "sword-shield",
+    "lets-go-pikachu-lets-go-eevee",
+    "ultra-sun-ultra-moon",
+];
+
+const MOVE_SET_GAME_VERSION_COUNTER = {
+    scarletviolet: 0,
+    brilliantdiamondandshiningpearl: 0,
+    swordshield: 0,
+    letsgopikachuletsgoeevee: 0,
+    ultrasunultramoon: 0,
+}
+
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
  * 
@@ -188,6 +204,8 @@ export default async function curatePokemon(pokedex, regionDex) {
         for(const pokemonForm of pokemonSpecies.varieties) {
             if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name, unsupportedPokemons)) {
                 curatedPokemons.push(pokemonForm.pokemon.name)
+                const pokemon = await pokedex.getPokemonByName(pokemonForm.pokemon.name);
+                const pokemonLatestGameVersion = await getPokemonLatestMoveSetVersion(pokemon.name, pokemon.moves);
             }
         }
         /*
@@ -244,6 +262,8 @@ export default async function curatePokemon(pokedex, regionDex) {
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
     console.log(curatedPokemons.length + " pokemons collected!");
+    console.log("Move counter by version:");
+    console.log(MOVE_SET_GAME_VERSION_COUNTER);
     fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
     fs.writeFileSync("./collected_data/unhandledPokemons.json", JSON.stringify(unsupportedPokemons));
 
@@ -307,18 +327,12 @@ function isPokemonFormExcluded(pokemonForm) {
  */
 async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
     for(const move of moves) {
-        switch(true) {
-            case move.version_group_details.find((version) => version.version_group.name == "scarlet-violet") !=  undefined:
-                return "scarlet-violet";
-    
-            case move.version_group_details.find((version) => version.version_group.name == "sword-shield") != undefined:
-                return "sword-shield";
-    
-            case move.version_group_details.find((version) => version.version_group.name == "brilliant-diamond-and-shining-pearl") != undefined:
-                return "brilliant-diamond-and-shining-pearl";
-    
-            case move.version_group_details.find((version) => version.version_group.name == "lets-go-pikachu-lets-go-eevee") != undefined:
-                return "lets-go-pikachu-lets-go-eevee";
+        for(const gameVersion of MOVE_SET_GAME_VERSION) {
+            const isMoveInGameVersion = move.version_group_details.find((version) => version.version_group.name == gameVersion);
+            if(isMoveInGameVersion) {
+                MOVE_SET_GAME_VERSION_COUNTER[gameVersion.replaceAll("-", "")] += 1;
+                return gameVersion;
+            }
         }
     }
     
