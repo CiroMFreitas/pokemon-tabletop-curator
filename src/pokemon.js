@@ -3,6 +3,17 @@
 import * as fs from 'fs';
 import { capitalizeString } from "./utils.js";
 
+const SUPPORTED_ALTERNATE_FORMS = [
+    // regional
+    "alola",
+    "galar",
+    "hisui",
+    "paldea",
+
+    // special
+    "mega",
+];
+
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
  * 
@@ -20,8 +31,12 @@ export default async function curatePokemon(pokedex, regionDex) {
     
     const searchDex = await pokedex.getPokedexByName(regionDex);
     for(const entry of searchDex.pokemon_entries) {
-        const pokemon = await pokedex.getPokemonByName(entry.pokemon_species.name);
-        const pokemonLatestGameVersion = await getPokemonLatestMoveSetVersion(pokemon.name, pokemon.moves);
+        const pokemonSpecies = await pokedex.getPokemonSpeciesByName(entry.pokemon_species.name);
+        for(const pokemonForm of pokemonSpecies.varieties) {
+            if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name)) {
+            }
+        }
+        /*
         const pokemonAbilities = [];
         const pokemonMoves = [];
   
@@ -70,16 +85,36 @@ export default async function curatePokemon(pokedex, regionDex) {
             moves: pokemonMoves,
         });
 
-        console.log(capitalizeString(pokemon.name) + " collected!")
+        console.log(capitalizeString(pokemon.name) + " collected!")*/
     }
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
-    fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
-    console.log("Pokemons " + curatedPokemons.length + " collected!");
+    //fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
+
+    process.exit();
     return {
       abilities: abilities,
       moves: moves,
     };
+}
+
+/**
+ * Checks if pokemon's aesired form is valid for collection.
+ * 
+ * It's expect to receive the unformated pokemon form name.
+ * 
+ * @param {string} pokemonForm 
+ * @returns {boolean}
+ */
+function isPokemonFormSupported(pokemonForm) {
+    for(const supportedForm of SUPPORTED_ALTERNATE_FORMS) {
+        if(pokemonForm.includes(supportedForm)) {
+            return true;
+        }
+    }
+
+    console.log(capitalizeString(pokemonForm) + " alterned from is not supported! :(")
+    return false
 }
 
 /**

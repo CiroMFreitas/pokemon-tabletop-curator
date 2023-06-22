@@ -6,7 +6,7 @@ import curateMoves from './moves.js';
 // API Wrapper
 const POKEDEX = new Pokedex();
 // Region Pokedex which you want to import your pokemons
-const REGION_DEX = "kanto";
+const REGION_DEX = "updated-alola";
 
 /**
  * Searchs pokemons and theis abilities and moves, curating necessary data on the go.
