@@ -4,14 +4,36 @@ import * as fs from 'fs';
 import { capitalizeString } from "./utils.js";
 
 const SUPPORTED_ALTERNATE_FORMS = [
-    // regional
+    // Regional
     "alola",
     "galar",
     "hisui",
     "paldea",
 
-    // special
+    // Special
     "mega",
+];
+
+const EXCLUEDED_ALTERNATE_FORMS = [
+    // Special
+    "totem",
+    "gmax",
+
+    // Pikachu
+    "rock-star",
+    "belle alterned",
+    "pop-star",
+    "phd",
+    "libre",
+    "cosplay",
+    "original-cap",
+    "hoenn-cap",
+    "sinnoh-cap",
+    "unova-cap",
+    "kalos-cap",
+    "partner-cap",
+    "starter",
+    "world-cap",
 ];
 
 /**
@@ -107,13 +129,33 @@ export default async function curatePokemon(pokedex, regionDex) {
  * @returns {boolean}
  */
 function isPokemonFormSupported(pokemonForm) {
-    for(const supportedForm of SUPPORTED_ALTERNATE_FORMS) {
-        if(pokemonForm.includes(supportedForm)) {
+    if(!isPokemonFormExcluded(pokemonForm)) {
+        for(const supportedForm of SUPPORTED_ALTERNATE_FORMS) {
+            if(pokemonForm.includes(supportedForm)) {
+                return true;
+            }
+        }
+
+        console.log(capitalizeString(pokemonForm) + " alterned from is not supported! :(")
+    }
+    return false
+}
+
+/**
+ * Checks if pokemon's form is not desired for collection.
+ * 
+ * It's expect to receive the unformated pokemon form name.
+ * 
+ * @param {string} pokemonForm 
+ * @returns {boolean}
+ */
+function isPokemonFormExcluded(pokemonForm) {
+    for(const excludedForm of EXCLUEDED_ALTERNATE_FORMS) {
+        if(pokemonForm.includes(excludedForm)) {
             return true;
         }
     }
 
-    console.log(capitalizeString(pokemonForm) + " alterned from is not supported! :(")
     return false
 }
 
