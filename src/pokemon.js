@@ -327,8 +327,9 @@ async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
         }
     }
     
-    console.log("No game version with " + capitalizeString(pokemonName) + " moves! :(");
-    process.exit();
+    // Code to be uncommented when API data is updated
+    //console.log("No game version with " + capitalizeString(pokemonName) + " moves! :(");
+    //process.exit();
 }
 
 /**
