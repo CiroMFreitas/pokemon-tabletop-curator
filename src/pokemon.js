@@ -255,6 +255,18 @@ export default async function curatePokemon(pokedex, regionDex) {
                 });
             }
         }
+    
+        // Pokemon data collector
+            curatedPokemons.push({
+            name: pokemon.name,
+            primaryType: pokemon.types[0].type.name,
+            secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
+            abilities: pokemonAbilities,
+            stats: pokemonStatHandler(pokemon.stats),
+            moves: pokemonMoves,
+        });
+
+        console.log(capitalizeString(pokemon.name) + " collected!")
     }
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
@@ -334,4 +346,51 @@ async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
     
     console.log("No game version with " + capitalizeString(pokemonName) + " moves! :(");
     process.exit();
+}
+
+/**
+ * Handles the stats object array in a pokemon endpoint and handle into a stats object more suited for me.
+ * 
+ * 
+ * @param {array} stats 
+ * @returns {object}
+ */
+function pokemonStatHandler(stats) {
+    const handledStats= {
+        hitPoints: {
+            base: Math.max(Math.round(stats[0].base_stat/10), 1),
+            boosts: [],
+        },
+        attack: {
+            base: Math.max(Math.round(stats[1].base_stat/20), 1),
+            boosts: [],
+        },
+        defense: {
+            base: Math.max(Math.round(stats[2].base_stat/20), 1),
+            boosts: [],
+        },
+        specialAttack: {
+            base: Math.max(Math.round(stats[3].base_stat/20), 1),
+            boosts: [],
+        },
+        specialDefense: {
+            base: Math.max(Math.round(stats[4].base_stat/20), 1),
+            boosts: [],
+        },
+        speed: {
+            base: Math.max(Math.round(stats[5].base_stat/20), 1),
+            boosts: [],
+        },
+    };
+
+    for(let i = 1; i < 7; i++) {
+        handledStats.hitPoints.boosts.push(handledStats.hitPoints.base + Math.max(Math.floor(handledStats.hitPoints.base*(i/3)), i));
+        handledStats.attack.boosts.push(handledStats.attack.base + Math.max(Math.floor(handledStats.attack.base*(i/3)), i));
+        handledStats.defense.boosts.push(handledStats.defense.base + Math.max(Math.floor(handledStats.defense.base*(i/3)), i));
+        handledStats.specialAttack.boosts.push(handledStats.specialAttack.base + Math.max(Math.floor(handledStats.specialAttack.base*(i/3)), i));
+        handledStats.specialDefense.boosts.push(handledStats.specialDefense.base + Math.max(Math.floor(handledStats.specialDefense.base*(i/3)), i));
+        handledStats.speed.boosts.push(handledStats.speed.base + Math.max(Math.floor(handledStats.speed.base*(i/3)), i));
+    }
+
+    return handledStats;
 }
