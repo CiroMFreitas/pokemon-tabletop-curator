@@ -12,28 +12,52 @@ const SUPPORTED_ALTERNATE_FORMS = [
 
     // Special
     "mega",
+
+    // Oricorio, all it's forms are desired
+    "oricorio",
+
+    // Rockruff own tempo
+    "rockruff-own-tempo",
+
+    // Lycanroc, all it's forms are desired
+    "lycanroc",
+
+    // Wishiwashi school form
+    "wishiwashi-school",
+
+    // Basculin, all it's forms are desired
+    "basculin",
+
+    // Castform, all it's forms are desired
+    "castform",
+
+    // Castform, all it's forms are desired
+    "castform",
+
+    // Zygarde, all it's forms are desired
+    "zygarde",
+
+    // Necrozma-, all it's forms are desired
+    "necrozma",
 ];
 
 const EXCLUEDED_ALTERNATE_FORMS = [
     // Special
     "totem",
     "gmax",
+    "-starter",
 
-    // Pikachu
-    "rock-star",
-    "belle alterned",
-    "pop-star",
-    "phd",
-    "libre",
-    "cosplay",
-    "original-cap",
-    "hoenn-cap",
-    "sinnoh-cap",
-    "unova-cap",
-    "kalos-cap",
-    "partner-cap",
-    "starter",
-    "world-cap",
+    // Pikachu none of it's alternate forms are desired
+    "pikachu-",
+
+    // Floeete eternal is not desired
+    "floette-eternal",
+
+    // Minior none of it's alternate forms are desired
+    "minior-",
+
+    // Magearna original is not desired
+    "magearna-original",
 ];
 
 /**
