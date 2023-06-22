@@ -245,28 +245,11 @@ export default async function curatePokemon(pokedex, regionDex) {
                     primaryType: pokemon.types[0].type.name,
                     secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
                     abilities: pokemonAbilities,
-                    hitpoints: Math.max(Math.round(pokemon.stats[0].base_stat/10), 1),
-                    attack: Math.max(Math.round(pokemon.stats[1].base_stat/20), 1),
-                    defense: Math.max(Math.round(pokemon.stats[2].base_stat/20), 1),
-                    specialAttack: Math.max(Math.round(pokemon.stats[3].base_stat/20), 1),
-                    specialDefense: Math.max(Math.round(pokemon.stats[4].base_stat/20), 1),
-                    speed: Math.max(Math.round(pokemon.stats[5].base_stat/20), 1),
+                    stats: pokemonStatHandler(pokemon.stats),
                     moves: pokemonMoves,
                 });
             }
         }
-    
-        // Pokemon data collector
-            curatedPokemons.push({
-            name: pokemon.name,
-            primaryType: pokemon.types[0].type.name,
-            secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
-            abilities: pokemonAbilities,
-            stats: pokemonStatHandler(pokemon.stats),
-            moves: pokemonMoves,
-        });
-
-        console.log(capitalizeString(pokemon.name) + " collected!")
     }
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
