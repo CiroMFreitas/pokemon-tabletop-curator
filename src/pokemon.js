@@ -5,13 +5,20 @@ import { capitalizeString } from "./utils.js";
 
 const SUPPORTED_ALTERNATE_FORMS = [
     // Regional
-    "alola",
-    "galar",
-    "hisui",
-    "paldea",
+    "-alola",
+    "-galar",
+    "-hisui",
+    "-paldea",
 
     // Special
-    "mega",
+    "-mega",
+    "-primal",
+    "-origin",
+    "-zen",
+    "-therian",
+    "-black",
+    "-white",
+    "-crowned",
 
     // Oricorio, all it's forms are desired
     "oricorio",
@@ -31,14 +38,86 @@ const SUPPORTED_ALTERNATE_FORMS = [
     // Castform, all it's forms are desired
     "castform",
 
-    // Castform, all it's forms are desired
-    "castform",
-
     // Zygarde, all it's forms are desired
     "zygarde",
 
-    // Necrozma-, all it's forms are desired
+    // Necrozma, all it's forms are desired
     "necrozma",
+
+    // Deoxys, all it's forms are desired
+    "deoxys",
+
+    // Wormadam, all it's forms are desired
+    "wormadam",
+
+    // Eotom, all it's forms are desired
+    "rotom",
+
+    // Shaymin Sky form
+    "shaymin-sky",
+
+    // Meloetta-pirouette form
+    "meloetta-pirouette",
+
+    // Greninja-battle bond form
+    "greninja-battle-bond",
+
+    // Meowstic, all it's forms are desired
+    "meowstic",
+
+    // Aegislash-blade form
+    "aegislash-blade",
+
+    // Pumpkaboo, all it's forms are desired
+    "pumpkaboo",
+
+    // Gourgeist, all it's forms are desired
+    "gourgeist",
+
+    // Hoopa unbound form
+    "hoopa-unbound",
+
+    // Cramorant gulping form
+    "cramorant-gulping",
+
+    // Toxtricity low key form
+    "toxtricity-low-key",
+
+    // eiscue noice form
+    "eiscue-noice",
+
+    // Indeedee female form
+    "indeedee-female",
+
+    // Morpeko hangry form
+    "morpeko-hangry",
+
+    // Eternatus eternamax form
+    "eternatus-eternamax",
+
+    // Urshifu rapid strike form
+    "urshifu-rapid-strike",
+
+    // Calyrex, all it's forms are desired
+    "calyrex",
+
+    // Basculegion female form
+    "basculegion-female",
+
+    // Oinkologne female form
+    "oinkologne-female",
+
+    // Squawkabilly, all it's forms are desired
+    "squawkabilly",
+
+    // Palafin hero form
+    "palafin-hero",
+
+    // Tatsugiri, all it's forms are desired
+    "tatsugiri",
+
+    // Gimmighoul roaming form
+    "gimmighoul-roaming",
 ];
 
 const EXCLUEDED_ALTERNATE_FORMS = [
@@ -58,6 +137,33 @@ const EXCLUEDED_ALTERNATE_FORMS = [
 
     // Magearna original is not desired
     "magearna-original",
+
+    // Keldeo resolute is not desired
+    "keldeo-resolute",
+
+    // Greninja-ash is not desired
+    "greninja-ash",
+
+    // Mimikyu busted is not desired
+    "mimikyu-busted",
+
+    // Cramorant gorging is not desired
+    "cramorant-gorging",
+
+    // Cramorant gorging is not desired
+    "zarude-dada",
+
+    // maushold family of three is not desired
+    "maushold-family-of-three",
+
+    // Dudunsparce three segment is not desired
+    "dudunsparce-three-segment",
+
+    // Koraidon none of it's alternate forms are desired
+    "koraidon-",
+
+    // Miraidon none of it's alternate forms are desired
+    "miraidon-",
 ];
 
 /**
@@ -72,6 +178,7 @@ const EXCLUEDED_ALTERNATE_FORMS = [
 export default async function curatePokemon(pokedex, regionDex) {
     console.log("Starting pokemon data collection!");
     const curatedPokemons = [];
+    const unsupportedPokemons = [];
     const abilities = [];
     const moves = [];
     
@@ -79,7 +186,8 @@ export default async function curatePokemon(pokedex, regionDex) {
     for(const entry of searchDex.pokemon_entries) {
         const pokemonSpecies = await pokedex.getPokemonSpeciesByName(entry.pokemon_species.name);
         for(const pokemonForm of pokemonSpecies.varieties) {
-            if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name)) {
+            if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name, unsupportedPokemons)) {
+                curatedPokemons.push(pokemonForm.pokemon.name)
             }
         }
         /*
@@ -135,7 +243,9 @@ export default async function curatePokemon(pokedex, regionDex) {
     }
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
-    //fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
+    console.log(curatedPokemons.length + " pokemons collected!");
+    fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
+    fs.writeFileSync("./collected_data/unhandledPokemons.json", JSON.stringify(unsupportedPokemons));
 
     process.exit();
     return {
@@ -152,7 +262,7 @@ export default async function curatePokemon(pokedex, regionDex) {
  * @param {string} pokemonForm 
  * @returns {boolean}
  */
-function isPokemonFormSupported(pokemonForm) {
+function isPokemonFormSupported(pokemonForm, unsupportedPokemons) {
     if(!isPokemonFormExcluded(pokemonForm)) {
         for(const supportedForm of SUPPORTED_ALTERNATE_FORMS) {
             if(pokemonForm.includes(supportedForm)) {
@@ -160,6 +270,7 @@ function isPokemonFormSupported(pokemonForm) {
             }
         }
 
+        unsupportedPokemons.push(pokemonForm);
         console.log(capitalizeString(pokemonForm) + " alterned from is not supported! :(")
     }
     return false
