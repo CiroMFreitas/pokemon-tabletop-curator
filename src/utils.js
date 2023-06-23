@@ -1,5 +1,21 @@
 // Shared utilitarian methods
 
+const FLAVOR_TEXT_VERSION = [
+  "scarlet-violet",
+  "brilliant-diamond-and-shining-pearl",
+  "sword-shield",
+  "lets-go-pikachu-lets-go-eevee",
+  "ultra-sun-ultra-moon",
+];
+
+const FLAVOR_TEXT_VERSION_COUNTER = {
+    scarletviolet: 0,
+    brilliantdiamondandshiningpearl: 0,
+    swordshield: 0,
+    letsgopikachuletsgoeevee: 0,
+    ultrasunultramoon: 0,
+}
+
 /**
  * Capitalizes string.
  * 
@@ -21,21 +37,22 @@ export function capitalizeString(str) {
  * @param {string} name 
  * @returns {string}
  */
-export async function getLatestFlavorText(flavor_text_entries, name) {  
-    for(const entry of flavor_text_entries) {
-      switch (entry.version_group.name) {
-        case "scarlet-violet":
-          return flavor_text_entries.find((founEntry) => founEntry.language.name == "en" && entry.version_group.name == "scarlet-violet").flavor_text;
-    
-        case "sword-shield":
-          return flavor_text_entries.find((founEntry) => founEntry.language.name == "en" && entry.version_group.name == "sword-shield").flavor_text;
-      }
-    }
-    
-    if(flavor_text_entries.length == 0) {
-      return "None.";
-    } else {
-      console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
-      process.exit();
-    }
+export async function getLatestFlavorText(flavor_text_entries, name) {
+  if(flavor_text_entries.length == 0) {
+    return "Missing.";
   }
+
+  for(const entry of flavor_text_entries) {
+
+      for(const gameVersion of FLAVOR_TEXT_VERSION) {
+        if(entry.version_group.name == gameVersion) {
+            FLAVOR_TEXT_VERSION_COUNTER[gameVersion.replaceAll("-", "")] += 1;
+            return entry.flavor_text;
+        }
+      }
+  }
+
+  // Code to be uncommented when API data is updated
+  console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
+  process.exit();
+}
