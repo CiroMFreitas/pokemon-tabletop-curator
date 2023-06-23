@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { capitalizeString, getLatestFlavorText } from "./utils.js";
+import { getLatestFlavorText } from "./utils.js";
 
 /**
  * Get all abilities from all pokemons found in the requested region dex with latest flavor text.
@@ -17,12 +17,11 @@ export default async function curateAbilities(pokedex, abilities) {
   
         curatedAbilities.push({
             name: newAbility.name,
-            flavorText: newAbilityFlavorText.replace("\n", " "),
+            flavorText: newAbilityFlavorText.replaceAll("\n", " "),
         });
-        console.log(capitalizeString(ability) + " ability collected!");
     }
   
     // Writes curated abilities file
     fs.writeFileSync("./collected_data/abilities.json", JSON.stringify(curatedAbilities));
-    console.log("Abilities " + curatedAbilities.length + " collected!");
+    console.log(curatedAbilities.length + " abilities collected!");
 }
