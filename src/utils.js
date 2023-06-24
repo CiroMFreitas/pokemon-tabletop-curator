@@ -53,6 +53,6 @@ export async function getLatestFlavorText(flavor_text_entries, name) {
   }
 
   // Code to be uncommented when API data is updated
-  console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
-  process.exit();
+  //console.log("No game version with " + capitalizeString(name) + " flavor text! :(");
+  //process.exit();
 }
