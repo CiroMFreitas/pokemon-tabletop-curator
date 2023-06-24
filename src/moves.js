@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { capitalizeString, getLatestFlavorText } from "./utils.js";
+import { getLatestFlavorText } from "./utils.js";
 
 /**
  * Get all moves from all pokemons found in the requested region dex with latest flavor text and curated stats.
