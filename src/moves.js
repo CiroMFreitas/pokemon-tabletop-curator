@@ -19,19 +19,17 @@ export default async function curateMoves(pokedex, moves) {
             name: newMove.name,
             category: newMove.damage_class.name,
             type: newMove.type.name,
-            accuracy: newMove.accuracy ? (6 - Math.floor(newMove.accuracy/20)) : null,
-            power: newMove.power ? Math.max(Math.round(newMove.accuracy/25), 1) : null,
+            accuracy: newMove.accuracy ? 7 - Math.ceil(newMove.accuracy/20) : null,
+            power: newMove.power ? Math.round(newMove.power/20) : null,
             exertion: getMoveExhaustion(newMove.pp),
             effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.stat_changes, newMove.priority),
-            flavorText: newMoveFlavorText.replace("\n", " "),
+            flavorText: newMoveFlavorText.replaceAll("\n", " "),
         });
-
-        console.log(capitalizeString(move) + " move collected!");
     }
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
     fs.writeFileSync("./collected_data/moves.json", JSON.stringify(curatedMoves));
-    console.log("Moves " + curatedMoves.length + " collected!");
+    console.log(curatedMoves.length + " moves collected!");
 }
 
 /**
@@ -63,7 +61,7 @@ function moveEffectFlagsHandler(meta, statChanges, priority) {
         if(meta.ailment.name != "none") {
             effectFlags.push({
                 name: meta.ailment.name,
-                chance: 6 - Math.floor(meta.ailment_chance/20),
+                chance: 7 - Math.ceil(meta.ailment_chance/20),
             });
         }
 
@@ -84,7 +82,7 @@ function moveEffectFlagsHandler(meta, statChanges, priority) {
         if(meta.flinch_chance > 0){
             effectFlags.push({
                 name: "flinch",
-                chance: 6 - Math.floor(meta.ailment_chance/20),
+                chance: 7 - Math.ceil(meta.ailment_chance/20),
             });
         }
 
