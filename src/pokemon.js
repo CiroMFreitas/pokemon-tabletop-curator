@@ -203,7 +203,6 @@ export default async function curatePokemon(pokedex, regionDex) {
         const pokemonSpecies = await pokedex.getPokemonSpeciesByName(entry.pokemon_species.name);
         for(const pokemonForm of pokemonSpecies.varieties) {
             if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name, unsupportedPokemons)) {
-                curatedPokemons.push(pokemonForm.pokemon.name)
                 const pokemon = await pokedex.getPokemonByName(pokemonForm.pokemon.name);
                 const pokemonLatestGameVersion = await getPokemonLatestMoveSetVersion(pokemon.name, pokemon.moves);
                 const pokemonAbilities = [];
