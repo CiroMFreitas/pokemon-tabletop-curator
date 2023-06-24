@@ -38,19 +38,19 @@ export function capitalizeString(str) {
  * @returns {string}
  */
 export async function getLatestFlavorText(flavor_text_entries, name) {
-  if(flavor_text_entries.length == 0) {
-    return "Missing.";
-  }
+	if(flavor_text_entries.length == 0) {
+		return "Missing.";
+  	}
+	
+	for(const entry of flavor_text_entries) {
 
-  for(const entry of flavor_text_entries) {
-
-      for(const gameVersion of FLAVOR_TEXT_VERSION) {
         if(entry.version_group.name == gameVersion) {
-            FLAVOR_TEXT_VERSION_COUNTER[gameVersion.replaceAll("-", "")] += 1;
-            return entry.flavor_text;
-        }
-      }
-  }
+		for(const gameVersion of FLAVOR_TEXT_VERSION) {
+	    		FLAVOR_TEXT_VERSION_COUNTER[gameVersion.replaceAll("-", "")] += 1;
+	    		return entry.flavor_text;
+	    	}
+	    }
+	}
 
   // Code to be uncommented when API data is updated
   //console.log("No game version with " + capitalizeString(name) + " flavor text! :(");

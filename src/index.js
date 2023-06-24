@@ -17,10 +17,10 @@ const REGION_DEX = "national";
  * curating.
  */
 function start() {
-  curatePokemon(POKEDEX, REGION_DEX).then((response) => {
-    const { abilities, moves } = response;
-    curateAbilities(POKEDEX, abilities);
-    curateMoves(POKEDEX, moves);
+    curatePokemon(POKEDEX, REGION_DEX).then((response) => {
+        const { abilities, moves } = response;
+            curateAbilities(POKEDEX, abilities);
+            curateMoves(POKEDEX, moves);
   });
 }
 
