@@ -44,8 +44,8 @@ export async function getLatestFlavorText(flavor_text_entries, name) {
 	
 	for(const entry of flavor_text_entries) {
 
-        if(entry.version_group.name == gameVersion) {
 		for(const gameVersion of FLAVOR_TEXT_VERSION) {
+	    	if(entry.language.name == "en" && entry.version_group.name == gameVersion) {
 	    		FLAVOR_TEXT_VERSION_COUNTER[gameVersion.replaceAll("-", "")] += 1;
 	    		return entry.flavor_text;
 	    	}
