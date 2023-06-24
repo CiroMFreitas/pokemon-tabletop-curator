@@ -54,6 +54,15 @@ function getMoveExhaustion(pp) {
     }
 }
 
+/**
+ * Handles possible effect flags in moves, returning a array with objects.
+ * 
+ * 
+ * @param {string} meta 
+ * @param {string} statChanges 
+ * @param {string} priority 
+ * @returns {array}
+ */
 function moveEffectFlagsHandler(meta, statChanges, priority) {
     const effectFlags = [];
 
