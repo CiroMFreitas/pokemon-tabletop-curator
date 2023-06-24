@@ -342,38 +342,52 @@ function pokemonStatHandler(stats) {
     const handledStats= {
         hitPoints: {
             base: Math.max(Math.round(stats[0].base_stat/10), 1),
-            boosts: [],
         },
         attack: {
-            base: Math.max(Math.round(stats[1].base_stat/20), 1),
-            boosts: [],
+            base: Math.max(Math.round(stats[1].base_stat/15), 1),
         },
         defense: {
-            base: Math.max(Math.round(stats[2].base_stat/20), 1),
-            boosts: [],
+            base: Math.max(Math.round(stats[2].base_stat/15), 1),
         },
         specialAttack: {
-            base: Math.max(Math.round(stats[3].base_stat/20), 1),
-            boosts: [],
+            base: Math.max(Math.round(stats[3].base_stat/15), 1),
         },
         specialDefense: {
-            base: Math.max(Math.round(stats[4].base_stat/20), 1),
-            boosts: [],
+            base: Math.max(Math.round(stats[4].base_stat/15), 1),
         },
         speed: {
-            base: Math.max(Math.round(stats[5].base_stat/20), 1),
-            boosts: [],
+            base: Math.max(Math.round(stats[5].base_stat/15), 1),
         },
     };
-
-    for(let i = 1; i < 7; i++) {
-        handledStats.hitPoints.boosts.push(handledStats.hitPoints.base + Math.max(Math.floor(handledStats.hitPoints.base*(i/3)), i));
-        handledStats.attack.boosts.push(handledStats.attack.base + Math.max(Math.floor(handledStats.attack.base*(i/3)), i));
-        handledStats.defense.boosts.push(handledStats.defense.base + Math.max(Math.floor(handledStats.defense.base*(i/3)), i));
-        handledStats.specialAttack.boosts.push(handledStats.specialAttack.base + Math.max(Math.floor(handledStats.specialAttack.base*(i/3)), i));
-        handledStats.specialDefense.boosts.push(handledStats.specialDefense.base + Math.max(Math.floor(handledStats.specialDefense.base*(i/3)), i));
-        handledStats.speed.boosts.push(handledStats.speed.base + Math.max(Math.floor(handledStats.speed.base*(i/3)), i));
-    }
+    
+    handledStats.hitPoints["boost"] = getHitPointsBoost(stats[0].base_stat, handledStats.hitPoints.base);
+    handledStats.attack["boost"] = getOtherStatsBoost(stats[1].base_stat, handledStats.attack.base);
+    handledStats.defense["boost"] = getOtherStatsBoost(stats[2].base_stat, handledStats.defense.base);
+    handledStats.specialAttack["boost"] = getOtherStatsBoost(stats[3].base_stat, handledStats.specialAttack.base);
+    handledStats.specialDefense["boost"] = getOtherStatsBoost(stats[4].base_stat, handledStats.specialDefense.base);
+    handledStats.speed["boost"] = getOtherStatsBoost(stats[5].base_stat, handledStats.speed.base);
 
     return handledStats;
+}
+
+/**
+ * Calculates hit point's boos using both the pokemon games base stat and curated stat
+ * 
+ * @param {number} baseStat 
+ * @param {number} curatedStat 
+ * @returns {number}
+ */
+function getHitPointsBoost(baseStat, curatedStat) {
+    return Math.round(((((2*baseStat)+110)/10)-curatedStat)/6);
+}
+
+/**
+ * Calculates other stat's boos using both the pokemon games base stat and curated stat
+ * 
+ * @param {number} baseStat 
+ * @param {number} curatedStat 
+ * @returns {number}
+ */
+function getOtherStatsBoost(baseStat, curatedStat) {
+    return Math.round((((((2*baseStat)+99)*1.1)/15)-curatedStat)/6);
 }
