@@ -214,7 +214,7 @@ export default async function curatePokemon(pokedex, regionDex) {
                     if(moveGameVersion) {
                         pokemonMoves.push({
                             name: move.move.name,
-                            learningMethod: moveGameVersion.move_learn_method.name,
+                            learningCost: getLearningCost(moveGameVersion),
                         });
           
                         // Get relevant moves names
@@ -390,4 +390,29 @@ function getHitPointsBoost(baseStat, curatedStat) {
  */
 function getOtherStatsBoost(baseStat, curatedStat) {
     return Math.round((((((2*baseStat)+99)*1.1)/15)-curatedStat)/6);
+}
+
+/**
+ * Returns how it costs to learn the move.
+ * 
+ * @param {object} moveGameVersion 
+ * @returns {number}
+ */
+function getLearningCost(moveGameVersion) {
+    switch(moveGameVersion.move_learn_method.name) {
+        case "level-up":
+            return Math.ceil(moveGameVersion.level_learned_at/15);
+
+        case "egg":
+            return 2;
+
+        case "machine":
+           return 3;
+
+        case "tutor":
+            return 4;
+
+        default:
+            return 5
+    }
 }
