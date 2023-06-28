@@ -19,7 +19,7 @@ export default async function curateMoves(pokedex, moves) {
             name: newMove.name,
             category: newMove.damage_class.name,
             type: newMove.type.name,
-            accuracy: newMove.accuracy ? 7 - Math.ceil(newMove.accuracy/20) : null,
+            accuracy: newMove.accuracy ? 6 - Math.floor(newMove.accuracy/20) : null,
             power: newMove.power ? Math.round(newMove.power/20) : null,
             exertion: getMoveExhaustion(newMove.pp),
             effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.stat_changes, newMove.priority),
