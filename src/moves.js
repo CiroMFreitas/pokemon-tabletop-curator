@@ -133,13 +133,13 @@ function moveEffectFlagsHandler(meta, statChanges, priority) {
     switch(true) {
         case priority > 0:
             effectFlags.push({
-                name: "priority+",
+                name: "quick",
             });
             break;
 
         case priority < 0:
             effectFlags.push({
-                name: "priority-",
+                name: "slow",
             });
             break;
     }
