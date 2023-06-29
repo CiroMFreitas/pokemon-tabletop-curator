@@ -78,7 +78,7 @@ const SUPPORTED_ALTERNATE_FORMS = [
     "hoopa-unbound",
 
     // Cramorant gulping form
-    "cramorant-gulping",
+    "gulping",
 
     // Toxtricity low key form
     "toxtricity-low-key",
@@ -125,6 +125,7 @@ const EXCLUEDED_ALTERNATE_FORMS = [
     "totem",
     "gmax",
     "-starter",
+    "power-construct",
 
     // Pikachu none of it's alternate forms are desired
     "pikachu-",
