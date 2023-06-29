@@ -258,8 +258,9 @@ export default async function curatePokemon(pokedex, regionDex) {
                         name: pokemon.name,
                         primaryType: pokemon.types[0].type.name,
                         secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
-                        abilities: pokemonAbilities,
+                        scale: Math.min(Math.ceil((pokemon.height * pokemon.weight)/2000), 6),
                         stats: pokemonStatHandler(pokemon.stats),
+                        abilities: pokemonAbilities,
                         moves: pokemonMoves,
                     });
                 }
