@@ -269,7 +269,7 @@ export default async function curatePokemon(pokedex, regionDex) {
   
     // Write file with curated pokemons data and returns all relevant abilities and moves names
     console.log(curatedPokemons.length + " pokemons collected!");
-    console.log("Move counter by version:");
+    console.log("Move set counter by version:");
     console.log(MOVE_SET_GAME_VERSION_COUNTER);
     fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
     fs.writeFileSync("./collected_data/unhandledPokemons.json", JSON.stringify(unsupportedPokemons));
