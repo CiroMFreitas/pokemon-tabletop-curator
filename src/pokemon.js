@@ -181,7 +181,15 @@ const MOVE_SET_GAME_VERSION_COUNTER = {
     swordshield: 0,
     letsgopikachuletsgoeevee: 0,
     ultrasunultramoon: 0,
-}
+};
+
+const extraAbilitiesPokemon = [
+    // Greninja battle bond ability
+    "greninja-battle-bond",
+
+    // Rockruff own tempo ability
+    "rockruff-own-tempo",
+];
 
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
@@ -209,45 +217,52 @@ export default async function curatePokemon(pokedex, regionDex) {
                 const pokemonAbilities = [];
                 const pokemonMoves = [];
   
-                for(const move of pokemon.moves) {
-                    // Checks if pokemons learns move in the desired game version and how
-                    const moveGameVersion = move.version_group_details.find((version) => version.version_group.name == pokemonLatestGameVersion);
-                    if(moveGameVersion) {
-                        pokemonMoves.push({
-                            name: move.move.name,
-                            learningCost: getLearningCost(moveGameVersion),
-                        });
-          
-                        // Get relevant moves names
-                        const isMoveAlreadyCollected = moves.find((collectedMove) => collectedMove == move.move.name);
-                        if(!isMoveAlreadyCollected) {
-                            moves.push(move.move.name);
-                        }
-                    }
-                }
-  
                 for(const ability of pokemon.abilities) {
                     pokemonAbilities.push({
                         name: ability.ability.name,
                         slot: ability.slot,
                     });
-            
+        
                     // Get relevant abilities names
-                    const isAbilityAlreadyCollected = abilities.find((collectedAbility) => collectedAbility == ability.ability.name);
+                    const isAbilityAlreadyCollected = abilities.find((collectedAbility) => collectedAbility ==  ability.ability.name);
                     if(!isAbilityAlreadyCollected) {
                         abilities.push(ability.ability.name);
                     }
                 }
+  
+                // Checks if pokemon is one of those with 4 abilities
+                if(extraAbilitiesPokemon.includes(pokemon.name)) {
+                    const pokemonName = pokemon.name.split("-");
+                    const pokemonIndex = curatedPokemons.findIndex((pokemon) => pokemon.name == pokemonName[0]);
+                    curatedPokemons[pokemonIndex].abilities.push(pokemonAbilities[0]);
+                } else {
+                    for(const move of pokemon.moves) {
+                        // Checks if pokemons learns move in the desired game version and how
+                        const moveGameVersion = move.version_group_details.find((version) => version.version_group. name == pokemonLatestGameVersion);
+                        if(moveGameVersion) {
+                            pokemonMoves.push({
+                                name: move.move.name,
+                                learningCost: getLearningCost(moveGameVersion),
+                            });
+          
+                            // Get relevant moves names
+                            const isMoveAlreadyCollected = moves.find((collectedMove) => collectedMove == move.move.name);
+                            if(!isMoveAlreadyCollected) {
+                                moves.push(move.move.name);
+                            }
+                        }
+                    }
     
-                // Pokemon data collector
-                curatedPokemons.push({
-                    name: pokemon.name,
-                    primaryType: pokemon.types[0].type.name,
-                    secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
-                    abilities: pokemonAbilities,
-                    stats: pokemonStatHandler(pokemon.stats),
-                    moves: pokemonMoves,
-                });
+                    // Pokemon data collector
+                    curatedPokemons.push({
+                        name: pokemon.name,
+                        primaryType: pokemon.types[0].type.name,
+                        secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
+                        abilities: pokemonAbilities,
+                        stats: pokemonStatHandler(pokemon.stats),
+                        moves: pokemonMoves,
+                    });
+                }
             }
         }
     }
