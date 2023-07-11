@@ -33,7 +33,8 @@ export default async function curateMoves(pokedex, moves) {
 }
 
 /**
- * Converts moves PP to value that's more  for me.
+ * Converts moves PP to value for a smaller value called exhaustation, the higher the velue, more taxing it 
+ * is for a pokémon to perform.
  * 
  * @param {number} pp 
  * @returns {number}
@@ -55,7 +56,8 @@ function getMoveExhaustion(pp) {
 }
 
 /**
- * Handles possible effect flags in moves, returning a array with objects.
+ * Handles possible effect flags in moves, returning a array with objects, due to how limited information is
+ * provided by the API, it still require manual handling afterwards.
  * 
  * 
  * @param {string} meta 

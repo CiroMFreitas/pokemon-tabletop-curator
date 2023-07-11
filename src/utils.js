@@ -27,11 +27,8 @@ export function capitalizeString(str) {
 }
 
 /**
- * Gets latest game version flavor text for an ability or move, flavor_text_entries object expects to be a
+ * Gets latest game version of a flavor text for an ability or move, flavor_text_entries object expects to be a
  * flavor_text_entries endpoint from a ability or move using pokedex-promise-v2.
- * 
- * If no version is found, process will shut down as it's intended to sinalize that I need to find the next 
- * possible version and add to the switch case.
  * 
  * @param {object} flavor_text_entries 
  * @param {string} name 

@@ -194,7 +194,7 @@ const extraAbilitiesPokemon = [
 /**
  * This will get all pokemon from the specified region's pokedex with latest possible game info.
  * 
- * Reponse: Object{ abilities: string[], moves: string[] }
+ * Reponse: Object{ abilitiesNames: string[], movesNames: string[] }
  * 
  * @param {Pokedex} pokedex 
  * @param {string} regionDex 
@@ -282,7 +282,7 @@ export default async function curatePokemon(pokedex, regionDex) {
 }
 
 /**
- * Checks if pokemon's aesired form is valid for collection.
+ * Checks if pokemon's form is valid for collection.
  * 
  * It's expect to receive the unformated pokemon form name.
  * 
@@ -322,11 +322,8 @@ function isPokemonFormExcluded(pokemonForm) {
 }
 
 /**
- * Tries to find which vertsion the requested pokémon move set is the latest, moves object expects to be a
+ * Tries to find which version the requested pokémons latest move set, moves object expects to be a
  * move endpoint from a pokemon using pokedex-promise-v2.
- * 
- * If no version is found, process will shut down as it's intended to sinalize that I need to find the next 
- * possible version and add to the switch case.
  * 
  * @param {string} pokemonName 
  * @param {object} moves 
@@ -349,8 +346,8 @@ async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
 }
 
 /**
- * Handles the stats object array in a pokemon endpoint and handle into a stats object more suited for me.
- * 
+ * Handles the stats object array in a pokemon endpoint and calculates them to be smaller, as 3 digit values
+ * not easily used in a tebletop format.
  * 
  * @param {array} stats 
  * @returns {object}
@@ -388,7 +385,7 @@ function pokemonStatHandler(stats) {
 }
 
 /**
- * Calculates hit point's boos using both the pokemon games base stat and curated stat
+ * Calculates hit point's boost using both the pokemon games base stat and curated stat.
  * 
  * @param {number} baseStat 
  * @param {number} curatedStat 
@@ -399,7 +396,7 @@ function getHitPointsBoost(baseStat, curatedStat) {
 }
 
 /**
- * Calculates other stat's boos using both the pokemon games base stat and curated stat
+ * Calculates other stat's boost using both the pokemon games base stat and curated stat
  * 
  * @param {number} baseStat 
  * @param {number} curatedStat 
@@ -410,7 +407,7 @@ function getOtherStatsBoost(baseStat, curatedStat) {
 }
 
 /**
- * Returns how it costs to learn the move.
+ * Returns how much it costs to learn the move.
  * 
  * @param {object} moveGameVersion 
  * @returns {number}
