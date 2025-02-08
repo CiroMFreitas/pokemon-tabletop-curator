@@ -10,6 +10,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "pokedex-promise-v2": "^4.1.1"
+    "pokedex-promise-v2": "^4.1.1",
+    "pokemon-tabletop-curator": "file:"
   }
 }
