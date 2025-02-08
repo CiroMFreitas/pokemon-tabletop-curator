@@ -252,10 +252,12 @@ export default async function curatePokemon(pokedex, regionDex) {
                             }
                         }
                     }
-    
+                    
                     // Pokemon data collector
                     curatedPokemons.push({
                         name: pokemon.name,
+                        formID: await pokedex.getPokemonFormByName(pokemon.forms[0].name).id,
+                        multipleForms: pokemon.forms.length > 1 ? "TRUE" : "FALSE",
                         primaryType: pokemon.types[0].type.name,
                         secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
                         scale: Math.min(Math.ceil((pokemon.height * pokemon.weight)/2000), 6),
@@ -355,55 +357,72 @@ async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
 function pokemonStatHandler(stats) {
     const handledStats= {
         hitPoints: {
-            base: Math.max(Math.round(stats[0].base_stat/10), 1),
+            min: getMinHitPoints(stats[0].base_stat),
+            max: getMaxHitPoints(stats[0].base_stat),
         },
         attack: {
-            base: Math.max(Math.round(stats[1].base_stat/15), 1),
+            min: getMinOtherStats(stats[1].base_stat),
+            max: getMaxOtherStats(stats[1].base_stat),
         },
         defense: {
-            base: Math.max(Math.round(stats[2].base_stat/15), 1),
+            min: getMinOtherStats(stats[2].base_stat),
+            max: getMaxOtherStats(stats[2].base_stat),
         },
         specialAttack: {
-            base: Math.max(Math.round(stats[3].base_stat/15), 1),
+            min: getMinOtherStats(stats[3].base_stat),
+            max: getMaxOtherStats(stats[3].base_stat),
         },
         specialDefense: {
-            base: Math.max(Math.round(stats[4].base_stat/15), 1),
+            min: getMinOtherStats(stats[4].base_stat),
+            max: getMaxOtherStats(stats[4].base_stat),
         },
         speed: {
-            base: Math.max(Math.round(stats[5].base_stat/15), 1),
+            min: getMinOtherStats(stats[5].base_stat),
+            max: getMaxOtherStats(stats[5].base_stat),
         },
     };
-    
-    handledStats.hitPoints["boost"] = getHitPointsBoost(stats[0].base_stat, handledStats.hitPoints.base);
-    handledStats.attack["boost"] = getOtherStatsBoost(stats[1].base_stat, handledStats.attack.base);
-    handledStats.defense["boost"] = getOtherStatsBoost(stats[2].base_stat, handledStats.defense.base);
-    handledStats.specialAttack["boost"] = getOtherStatsBoost(stats[3].base_stat, handledStats.specialAttack.base);
-    handledStats.specialDefense["boost"] = getOtherStatsBoost(stats[4].base_stat, handledStats.specialDefense.base);
-    handledStats.speed["boost"] = getOtherStatsBoost(stats[5].base_stat, handledStats.speed.base);
 
     return handledStats;
 }
 
 /**
- * Calculates hit point's boost using both the pokemon games base stat and curated stat.
+ * Calculates max hit point using pokemon's game base hit points.
  * 
  * @param {number} baseStat 
- * @param {number} curatedStat 
  * @returns {number}
  */
-function getHitPointsBoost(baseStat, curatedStat) {
-    return Math.round(((((2*baseStat)+110)/10)-curatedStat)/6);
+function getMinHitPoints(baseStat) {
+    return (2*baseStat)+110;
 }
 
 /**
- * Calculates other stat's boost using both the pokemon games base stat and curated stat
+ * Calculates other max stat using pokemon's game base stat
  * 
  * @param {number} baseStat 
- * @param {number} curatedStat 
  * @returns {number}
  */
-function getOtherStatsBoost(baseStat, curatedStat) {
-    return Math.round((((((2*baseStat)+99)*1.1)/15)-curatedStat)/6);
+function getMinOtherStats(baseStat) {
+    return Math.floor((2*baseStat)*0.9);
+}
+
+/**
+ * Calculates max hit point using pokemon's game base hit points.
+ * 
+ * @param {number} baseStat 
+ * @returns {number}
+ */
+function getMaxHitPoints(baseStat) {
+    return (2*baseStat)+204;
+}
+
+/**
+ * Calculates other max stat using pokemon's game base stat
+ * 
+ * @param {number} baseStat 
+ * @returns {number}
+ */
+function getMaxOtherStats(baseStat) {
+    return Math.floor(((2*baseStat)+99)*1.1);
 }
 
 /**
