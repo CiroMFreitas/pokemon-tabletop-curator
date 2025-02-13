@@ -17,7 +17,7 @@ export default async function curateAbilities(pokedex, abilities) {
   
         curatedAbilities.push({
             name: newAbility.name,
-            flavorText: newAbilityFlavorText.replaceAll("\n", " "),
+            flavorText: newAbilityFlavorText ? newAbilityFlavorText.replaceAll("\n", " ") : "",
         });
     }
   

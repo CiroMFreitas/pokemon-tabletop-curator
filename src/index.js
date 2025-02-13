@@ -21,6 +21,8 @@ function start() {
         const { abilities, moves } = response;
             curateAbilities(POKEDEX, abilities);
             curateMoves(POKEDEX, moves);
+  }).catch((error) => {
+    console.log(error);
   });
 }
 

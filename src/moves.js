@@ -17,12 +17,11 @@ export default async function curateMoves(pokedex, moves) {
   
         curatedMoves.push({
             name: newMove.name,
-            category: newMove.damage_class.name,
             type: newMove.type.name,
-            accuracy: newMove.accuracy ? 6 - Math.floor(newMove.accuracy/20) : null,
+            category: newMove.damage_class.name,
+            accuracy: newMove.accuracy ? Math.floor(newMove.accuracy/10) : null,
             power: newMove.power ? Math.max(Math.round(newMove.power/20), 1) : null,
-            exertion: getMoveExhaustion(newMove.pp),
-            effectFlags: moveEffectFlagsHandler(newMove.meta, newMove.stat_changes, newMove.priority),
+            exertion: 4 - Math.ceil(newMove.pp/10),
             flavorText: newMoveFlavorText.replaceAll("\n", " "),
         });
     }
@@ -53,98 +52,4 @@ function getMoveExhaustion(pp) {
         default:
             return 0;
     }
-}
-
-/**
- * Handles possible effect flags in moves, returning a array with objects, due to how limited information is
- * provided by the API, it still require manual handling afterwards.
- * 
- * 
- * @param {string} meta 
- * @param {string} statChanges 
- * @param {string} priority 
- * @returns {array}
- */
-function moveEffectFlagsHandler(meta, statChanges, priority) {
-    const effectFlags = [];
-
-    if(meta) {
-        if(meta.ailment.name != "none") {
-            effectFlags.push({
-                name: meta.ailment.name,
-                chance: 7 - Math.ceil(meta.ailment_chance/20),
-            });
-        }
-
-        if(meta.crit_rate > 0) {
-            effectFlags.push({
-                name: "crit",
-                strength: meta.crit_rate,
-            });
-        }
-
-        if(meta.drain > 0){
-            effectFlags.push({
-                name: "drain",
-                strength: Math.ceil(meta.drain/20),
-            });
-        }
-
-        if(meta.flinch_chance > 0){
-            effectFlags.push({
-                name: "flinch",
-                chance: 7 - Math.ceil(meta.ailment_chance/20),
-            });
-        }
-
-        if(meta.heal > 0){
-            effectFlags.push({
-                name: "heal",
-                strength: Math.ceil(meta.drain/20),
-            });
-        }
-
-        if(meta.max_hits > 0){
-            effectFlags.push({
-                name: "multiple",
-                strength: meta.max_hits,
-            });
-        }
-    }
-
-    if(statChanges) {
-        for(const statChange of statChanges) {
-            switch(true) {
-                case statChange.change > 0:
-                    effectFlags.push({
-                        name: "raises " + statChange.stat.name,
-                        strength: statChange.change,
-                    });
-                    break;
-    
-                case statChange.change < 0:
-                    effectFlags.push({
-                        name: "lowers " + statChange.stat.name,
-                        strength: statChange.change,
-                    });
-                    break;
-            }
-        }
-    }
-    
-    switch(true) {
-        case priority > 0:
-            effectFlags.push({
-                name: "quick",
-            });
-            break;
-
-        case priority < 0:
-            effectFlags.push({
-                name: "slow",
-            });
-            break;
-    }
-
-    return effectFlags;
 }

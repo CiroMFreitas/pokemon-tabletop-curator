@@ -126,6 +126,7 @@ const EXCLUEDED_ALTERNATE_FORMS = [
     "gmax",
     "-starter",
     "power-construct",
+    "-mega",
 
     // Pikachu none of it's alternate forms are desired
     "pikachu-",
@@ -203,7 +204,6 @@ const extraAbilitiesPokemon = [
 export default async function curatePokemon(pokedex, regionDex) {
     console.log("Starting pokemon data collection!");
     const curatedPokemons = [];
-    const unsupportedPokemons = [];
     const abilities = [];
     const moves = [];
     
@@ -211,17 +211,14 @@ export default async function curatePokemon(pokedex, regionDex) {
     for(const entry of searchDex.pokemon_entries) {
         const pokemonSpecies = await pokedex.getPokemonSpeciesByName(entry.pokemon_species.name);
         for(const pokemonForm of pokemonSpecies.varieties) {
-            if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name, unsupportedPokemons)) {
+            if(pokemonForm.is_default == true || isPokemonFormSupported(pokemonForm.pokemon.name)) {
                 const pokemon = await pokedex.getPokemonByName(pokemonForm.pokemon.name);
                 const pokemonLatestGameVersion = await getPokemonLatestMoveSetVersion(pokemon.name, pokemon.moves);
                 const pokemonAbilities = [];
                 const pokemonMoves = [];
   
                 for(const ability of pokemon.abilities) {
-                    pokemonAbilities.push({
-                        name: ability.ability.name,
-                        slot: ability.slot,
-                    });
+                    pokemonAbilities.push(ability.ability.name);
         
                     // Get relevant abilities names
                     const isAbilityAlreadyCollected = abilities.find((collectedAbility) => collectedAbility ==  ability.ability.name);
@@ -239,11 +236,9 @@ export default async function curatePokemon(pokedex, regionDex) {
                     for(const move of pokemon.moves) {
                         // Checks if pokemons learns move in the desired game version and how
                         const moveGameVersion = move.version_group_details.find((version) => version.version_group. name == pokemonLatestGameVersion);
-                        if(moveGameVersion) {
-                            pokemonMoves.push({
-                                name: move.move.name,
-                                learningCost: getLearningCost(moveGameVersion),
-                            });
+                        const validMoves = ["level-up", "egg"];
+                        if(moveGameVersion && validMoves.includes(moveGameVersion.move_learn_method.name)) {
+                            pokemonMoves.push(move.move.name);
           
                             // Get relevant moves names
                             const isMoveAlreadyCollected = moves.find((collectedMove) => collectedMove == move.move.name);
@@ -253,16 +248,25 @@ export default async function curatePokemon(pokedex, regionDex) {
                         }
                     }
                     
+                    // Get pokemons it eveolcer from
+                    let preEvolutions = [];
+                    if(pokemonSpecies.evolves_from_species) {
+                        const preEvolutionSpecies = await pokedex.getPokemonSpeciesByName(pokemonSpecies.evolves_from_species.name);
+                        preEvolutions = preEvolutions.concat(preEvolutionSpecies.varieties
+                            .filter((unfiltredPreEvolution) => !isPokemonFormExcluded(unfiltredPreEvolution.pokemon.name))
+                            .map((filtredPreEvolution) => filtredPreEvolution.pokemon.name));
+                    }
+
                     // Pokemon data collector
                     curatedPokemons.push({
                         name: pokemon.name,
-                        formID: await pokedex.getPokemonFormByName(pokemon.forms[0].name).id,
-                        multipleForms: pokemon.forms.length > 1 ? "TRUE" : "FALSE",
                         primaryType: pokemon.types[0].type.name,
                         secondaryType: pokemon.types.length > 1 ? pokemon.types[1].type.name : "",
-                        scale: Math.min(Math.ceil((pokemon.height * pokemon.weight)/2000), 6),
-                        stats: pokemonStatHandler(pokemon.stats),
                         abilities: pokemonAbilities,
+                        weight: getWeightStatCategory(pokemon.weight/10),
+                        height: getHeightCategory(pokemon.height/10),
+                        stats: pokemonStatHandler(pokemon.stats),
+                        preEvolutions: preEvolutions,
                         moves: pokemonMoves,
                     });
                 }
@@ -275,7 +279,6 @@ export default async function curatePokemon(pokedex, regionDex) {
     console.log("Move set counter by version:");
     console.log(MOVE_SET_GAME_VERSION_COUNTER);
     fs.writeFileSync("./collected_data/pokemons.json", JSON.stringify(curatedPokemons));
-    fs.writeFileSync("./collected_data/unhandledPokemons.json", JSON.stringify(unsupportedPokemons));
     
     return {
       abilities: abilities,
@@ -291,15 +294,13 @@ export default async function curatePokemon(pokedex, regionDex) {
  * @param {string} pokemonForm 
  * @returns {boolean}
  */
-function isPokemonFormSupported(pokemonForm, unsupportedPokemons) {
+function isPokemonFormSupported(pokemonForm) {
     if(!isPokemonFormExcluded(pokemonForm)) {
         for(const supportedForm of SUPPORTED_ALTERNATE_FORMS) {
             if(pokemonForm.includes(supportedForm)) {
                 return true;
             }
         }
-
-        unsupportedPokemons.push(pokemonForm);
         console.log(capitalizeString(pokemonForm) + " alterned from is not supported! :(")
     }
     return false
@@ -356,96 +357,94 @@ async function getPokemonLatestMoveSetVersion(pokemonName, moves) {
  */
 function pokemonStatHandler(stats) {
     const handledStats= {
-        hitPoints: {
-            min: getMinHitPoints(stats[0].base_stat),
-            max: getMaxHitPoints(stats[0].base_stat),
-        },
-        attack: {
-            min: getMinOtherStats(stats[1].base_stat),
-            max: getMaxOtherStats(stats[1].base_stat),
-        },
-        defense: {
-            min: getMinOtherStats(stats[2].base_stat),
-            max: getMaxOtherStats(stats[2].base_stat),
-        },
-        specialAttack: {
-            min: getMinOtherStats(stats[3].base_stat),
-            max: getMaxOtherStats(stats[3].base_stat),
-        },
-        specialDefense: {
-            min: getMinOtherStats(stats[4].base_stat),
-            max: getMaxOtherStats(stats[4].base_stat),
-        },
-        speed: {
-            min: getMinOtherStats(stats[5].base_stat),
-            max: getMaxOtherStats(stats[5].base_stat),
-        },
+        hp: getWeightStatCategory(stats[0].base_stat),
+        st: getWeightStatCategory(stats[1].base_stat),
+        to: getWeightStatCategory(stats[2].base_stat),
+        in: getWeightStatCategory(stats[3].base_stat),
+        sp: getWeightStatCategory(stats[4].base_stat),
+        ag: getWeightStatCategory(stats[5].base_stat),
     };
 
     return handledStats;
 }
 
 /**
- * Calculates max hit point using pokemon's game base hit points.
+ * Gets pokemon's weight or stat category.
  * 
- * @param {number} baseStat 
+ * @param {number} weightStat 
  * @returns {number}
  */
-function getMinHitPoints(baseStat) {
-    return (2*baseStat)+110;
-}
-
-/**
- * Calculates other max stat using pokemon's game base stat
- * 
- * @param {number} baseStat 
- * @returns {number}
- */
-function getMinOtherStats(baseStat) {
-    return Math.floor((2*baseStat)*0.9);
-}
-
-/**
- * Calculates max hit point using pokemon's game base hit points.
- * 
- * @param {number} baseStat 
- * @returns {number}
- */
-function getMaxHitPoints(baseStat) {
-    return (2*baseStat)+204;
-}
-
-/**
- * Calculates other max stat using pokemon's game base stat
- * 
- * @param {number} baseStat 
- * @returns {number}
- */
-function getMaxOtherStats(baseStat) {
-    return Math.floor(((2*baseStat)+99)*1.1);
-}
-
-/**
- * Returns how much it costs to learn the move.
- * 
- * @param {object} moveGameVersion 
- * @returns {number}
- */
-function getLearningCost(moveGameVersion) {
-    switch(moveGameVersion.move_learn_method.name) {
-        case "level-up":
-            return Math.ceil(moveGameVersion.level_learned_at/15);
-
-        case "egg":
+function getWeightStatCategory(weightStat) {
+    switch(true) {
+        case weightStat < 10:
+            return 1;
+            
+        case weightStat < 30:
             return 2;
-
-        case "machine":
-           return 3;
-
-        case "tutor":
+            
+        case weightStat < 60:
+            return 3;
+            
+        case weightStat < 100:
             return 4;
-
+            
+        case weightStat < 150:
+            return 5;
+            
+        case weightStat < 210:
+            return 6;
+            
+        case weightStat < 280:
+            return 7;
+            
+        case weightStat < 370:
+            return 8;
+            
+        case weightStat < 470:
+            return 9;
+        
         default:
-            return 5
+            return 10;
+    }
+}
+
+
+/**
+ * Gets pokemon's height category.
+ * 
+ * @param {number} height 
+ * @returns {number}
+ */
+function getHeightCategory(height) {
+    switch(true) {
+        case height <= 0.5:
+            return 1;
+            
+        case height < 1:
+            return 2;
+            
+        case height < 2:
+            return 3;
+            
+        case height < 4:
+            return 4;
+            
+        case height < 7:
+            return 5;
+            
+        case height < 11:
+            return 6;
+            
+        case height < 16:
+            return 7;
+            
+        case height < 22:
+            return 8;
+            
+        case height < 29:
+            return 9;
+        
+        default:
+            return 10;
     }
 }
